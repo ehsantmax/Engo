@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Telegram Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Selection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .language-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+  </style>
 </head>
 <body>
+  <h1 id="welcome-message">Welcome, please choose your language:</h1>
+  <button class="language-btn" onclick="changeLanguage('en')">English</button>
+  <button class="language-btn" onclick="changeLanguage('de')">German</button>
+  <button class="language-btn" onclick="changeLanguage('zh')">Chinese</button>
+  <button class="language-btn" onclick="changeLanguage('ko')">Korean</button>
+  <button class="language-btn" onclick="changeLanguage('ru')">Russian</button>
+  <button class="language-btn" onclick="changeLanguage('it')">Italian</button>
+  <button class="language-btn" onclick="changeLanguage('fr')">French</button>
+  <button class="language-btn" onclick="changeLanguage('uk')">Ukrainian</button>
 
-    <h1>Welcome to My Mini App</h1>
-    <p>Click the button below to send data to the bot:</p>
-    <button onclick="sendMessage()">Send Message</button>
-
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // گسترش فضای برنامه در WebView
-
-        function sendMessage() {
-            tg.sendData("Hello from Mini App!"); // ارسال داده به ربات
-        }
-
-        // نمایش اطلاعات کاربر در کنسول
-        console.log("User Data:", tg.initDataUnsafe);
-    </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
