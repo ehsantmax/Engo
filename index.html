@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <style>
-        /* استایل‌های عمومی */
+        /* پس‌زمینه فانتزی طلایی */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #8e2de2, #4a00e0); /* بک‌گراند زیبا */
+            background: linear-gradient(45deg, #ffd700, #ff6347, #ff8c00);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
         }
+        
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* استایل‌های عمومی */
         .container {
             text-align: center;
             padding: 30px;
@@ -26,6 +36,14 @@
             width: 300px;
             transition: transform 0.3s ease-in-out;
         }
+
+        /* دکمه "Next" انیمیشن */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .button {
             padding: 12px 25px;
             margin-top: 20px;
@@ -37,62 +55,75 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
+
         .button:hover {
             background-color: #0056b3;
             transform: scale(1.1);
+            animation: pulse 1s infinite;
         }
+
         .button:active {
             transform: scale(1.05);
         }
-        h2 {
-            color: #333;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        h3 {
-            color: #333;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-        select {
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
+
+        /* نوار انتخاب زبان */
+        .language-slider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: scroll;
+            height: 200px;
             width: 100%;
-            margin-top: 15px;
-            border: 1px solid #ccc;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        select:focus {
-            border-color: #007bff;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
         }
 
-        /* انیمیشن‌های جدید */
+        .language-slider button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+            width: 90%;
+        }
+
+        .language-slider button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        /* انیمیشن‌های صفحه */
         @keyframes zoomIn {
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes bounceIn {
-            0% { transform: translateY(-100%); opacity: 0; }
-            60% { transform: translateY(30px); opacity: 1; }
-            100% { transform: translateY(0); }
         }
 
         .zoom-in {
             animation: zoomIn 1s ease-in-out;
         }
 
+        @keyframes bounceIn {
+            0% { transform: translateY(-100%); opacity: 0; }
+            60% { transform: translateY(30px); opacity: 1; }
+            100% { transform: translateY(0); }
+        }
+
         .bounce-in {
             animation: bounceIn 1s ease-in-out;
         }
 
-        /* انیمیشن برای جابجایی صفحات */
         .fade-in {
             opacity: 0;
             animation: fadeIn 1s forwards;
         }
+
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -123,7 +154,7 @@
 <div class="container fade-in" id="page2" style="display:none;">
     <h2 class="zoom-in" id="welcomeMessage">Welcome to the Engo Language Learning App!</h2>
     <h3 class="bounce-in">Please select the language you would like to learn.</h3>
-    <div id="languageButtons"></div>
+    <div id="languageButtons" class="language-slider"></div>
 </div>
 
 <div class="container fade-in" id="page3" style="display:none;">
@@ -175,7 +206,6 @@
     }
 
     function chooseLanguage(language) {
-        // حذف کردن alert و انتقال مستقیم به صفحه بعد
         nextPage('page3');
     }
 </script>
