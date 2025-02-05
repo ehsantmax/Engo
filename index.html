@@ -50,6 +50,11 @@
             font-weight: bold;
             margin: 20px 0;
         }
+        h3 {
+            color: #333;
+            font-size: 16px;
+            margin-top: 15px;
+        }
         select {
             padding: 10px;
             border-radius: 5px;
@@ -148,7 +153,7 @@
             welcomeMessage.textContent = languageData[language];
 
             let languageButtonsDiv = document.getElementById('languageButtons');
-            languageButtonsDiv.innerHTML = '';
+            languageButtonsDiv.innerHTML = ''; // پاک کردن دکمه‌های قبلی
             languages.forEach(lang => {
                 let button = document.createElement('button');
                 button.classList.add('button');
