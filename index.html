@@ -5,180 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <style>
-        /* استایل‌های عمومی */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #8e2de2, #4a00e0); /* بک‌گراند زیبا */
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
         }
         .container {
             text-align: center;
             padding: 30px;
             border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: white;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            transition: transform 0.3s ease-in-out;
+            width: 350px;
         }
         .button {
-            padding: 12px 25px;
-            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: background-color 0.3s;
         }
         .button:hover {
             background-color: #0056b3;
-            transform: scale(1.1);
         }
-        .button:active {
-            transform: scale(1.05);
-        }
-        h2 {
-            color: #333;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        h3 {
-            color: #333;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-        select {
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            width: 100%;
-            margin-top: 15px;
-            border: 1px solid #ccc;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        select:focus {
-            border-color: #007bff;
-        }
-
-        /* انیمیشن‌های جدید */
-        @keyframes zoomIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes bounceIn {
-            0% { transform: translateY(-100%); opacity: 0; }
-            60% { transform: translateY(30px); opacity: 1; }
-            100% { transform: translateY(0); }
-        }
-
-        .zoom-in {
-            animation: zoomIn 1s ease-in-out;
-        }
-
-        .bounce-in {
-            animation: bounceIn 1s ease-in-out;
-        }
-
-        /* انیمیشن برای جابجایی صفحات */
-        .fade-in {
-            opacity: 0;
-            animation: fadeIn 1s forwards;
-        }
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
+        img {
+            width: 30px;
+            height: 20px;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="container fade-in" id="page1">
-    <h2>What language do you speak?</h2>
-    <select id="languageSelect">
-        <option value="English">English</option>
-        <option value="German">German</option>
-        <option value="Russian">Russian</option>
-        <option value="Italian">Italian</option>
-        <option value="French">French</option>
-        <option value="Turkish">Turkish</option>
-        <option value="Korean">Korean</option>
-        <option value="Japanese">Japanese</option>
-    </select>
-    <button class="button" onclick="nextPage('page2')">Next</button>
-</div>
+    <!-- صفحه انتخاب زبان -->
+    <div class="container" id="languagePage">
+        <h2>Please select your language</h2>
+        
+        <button class="button" onclick="selectLanguage('English')">
+            <img src="flags/uk.png" alt="UK"> English
+        </button>
+        <button class="button" onclick="selectLanguage('German')">
+            <img src="flags/germany.png" alt="Germany"> German
+        </button>
+        <button class="button" onclick="selectLanguage('Russian')">
+            <img src="flags/russia.png" alt="Russia"> Russian
+        </button>
+        <button class="button" onclick="selectLanguage('Italian')">
+            <img src="flags/italy.png" alt="Italy"> Italian
+        </button>
+        <button class="button" onclick="selectLanguage('French')">
+            <img src="flags/france.png" alt="France"> French
+        </button>
+        <button class="button" onclick="selectLanguage('Turkish')">
+            <img src="flags/turkey.png" alt="Turkey"> Turkish
+        </button>
+        <button class="button" onclick="selectLanguage('Japanese')">
+            <img src="flags/japan.png" alt="Japan"> Japanese
+        </button>
+        <button class="button" onclick="selectLanguage('Korean')">
+            <img src="flags/korea.png" alt="Korea"> Korean
+        </button>
+    </div>
 
-<div class="container fade-in" id="page2" style="display:none;">
-    <h2 class="zoom-in" id="welcomeMessage">Welcome to the Engo Language Learning App!</h2>
-    <h3 class="bounce-in">Please select the language you would like to learn.</h3>
-    <div id="languageButtons"></div>
-</div>
+    <!-- محتوای اصلی سایت (در ابتدا مخفی است) -->
+    <div class="container" id="mainContent" style="display: none;">
+        <h2>Welcome to the Telegram Mini App!</h2>
+        <p>Your selected language is: <span id="selectedLanguage"></span></p>
+    </div>
 
-<div class="container fade-in" id="page3" style="display:none;">
-    <h2>Welcome to the Engo Language Learning App!</h2>
-    <p>Let's get started with your lessons.</p>
-</div>
-
-<script>
-    let languageData = {
-        "English": "Welcome to the Engo Language Learning App!",
-        "German": "Willkommen bei der Engo Sprachlern-App!",
-        "Russian": "Добро пожаловать в приложение для изучения языков Engo!",
-        "Italian": "Benvenuto nell'app di apprendimento delle lingue Engo!",
-        "French": "Bienvenue dans l'application d'apprentissage des langues Engo!",
-        "Turkish": "Engo Dil Öğrenme Uygulamasına Hoş Geldiniz!",
-        "Korean": "Engo 언어 학습 앱에 오신 것을 환영합니다!",
-        "Japanese": "Engo言語学習アプリへようこそ！"
-    };
-
-    let languages = ["English", "German", "Russian", "Italian", "French", "Turkish", "Korean", "Japanese"];
-
-    function nextPage(page) {
-        let language = document.getElementById('languageSelect').value;
-
-        if (page === 'page2') {
-            let welcomeMessage = document.getElementById('welcomeMessage');
-            welcomeMessage.textContent = languageData[language];
-
-            let languageButtonsDiv = document.getElementById('languageButtons');
-            languageButtonsDiv.innerHTML = ''; // پاک کردن دکمه‌های قبلی
-            languages.forEach(lang => {
-                let button = document.createElement('button');
-                button.classList.add('button');
-                button.textContent = lang;
-                button.onclick = () => chooseLanguage(lang);
-                languageButtonsDiv.appendChild(button);
-            });
+    <script>
+        function selectLanguage(language) {
+            document.getElementById("selectedLanguage").textContent = language;
+            document.getElementById("languagePage").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
         }
-
-        // Hide all pages
-        document.getElementById('page1').style.display = 'none';
-        document.getElementById('page2').style.display = 'none';
-        document.getElementById('page3').style.display = 'none';
-
-        // Show the requested page with fade-in animation
-        let nextPage = document.getElementById(page);
-        nextPage.style.display = 'block';
-        nextPage.classList.add('fade-in');
-    }
-
-    function chooseLanguage(language) {
-        // حذف کردن alert و انتقال مستقیم به صفحه بعد
-        nextPage('page3');
-    }
-</script>
+    </script>
 
 </body>
 </html>
