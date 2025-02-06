@@ -20,6 +20,15 @@
             overflow: hidden;
         }
         
+        .engo-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 20px;
+}
+
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -146,7 +155,7 @@
         <option value="French">French</option>
         <option value="Turkish">Turkish</option>
         <option value="Korean">Korean</option>
-        <option value="Japanese">Japanese</option>
+        <option value="Persian">فارسی</option>
     </select>
     <button class="button" onclick="nextPage('page2')">Next</button>
 </div>
@@ -158,9 +167,43 @@
 </div>
 
 <div class="container fade-in" id="page3" style="display:none;">
+    <h1 class="engo-title">ENGO</h1>
     <h2>Welcome to the Engo Language Learning App!</h2>
     <p>Let's get started with your lessons.</p>
+    <div class="lesson-buttons">
+        <button class="lesson-btn">Lesson 1</button>
+        <button class="lesson-btn">Lesson 2</button>
+        <button class="lesson-btn">Lesson 3</button>
+        <button class="lesson-btn">Lesson 4</button>
+        <button class="lesson-btn">Lesson 5</button>
+        <button class="lesson-btn">Lesson 6</button>
+        <button class="lesson-btn">Lesson 7</button>
+        <button class="lesson-btn">Lesson 8</button>
+        <button class="lesson-btn">Lesson 9</button>
+        <button class="lesson-btn">Lesson 10</button>
+    </div>
 </div>
+    <style>
+        .lesson-btn {
+            background-color: #006eff; /* رنگ پس‌زمینه */
+            color: white; /* رنگ متن */
+            padding: 10px 2em; /* فاصله داخلی */
+            text-align: center; /* مرکز چین کردن متن */
+            text-decoration: none; /* حذف خط زیر لینک */
+            display: inline-block; /* نمایش دکمه‌ها به صورت خطی */
+            font-size: 16px; /* اندازه فونت */
+            margin: 4px 2px; /* فاصله بین دکمه‌ها */
+            cursor: pointer; /* تغییر نشانگر موس به شکل دست */
+            border-radius: 8px; /* گوشه‌های گرد */
+            border: none; /* حذف حاشیه */
+            transition: background-color 0.3s; /* افزودن افکت تغییر رنگ */
+        }
+
+        .lesson-btn:hover {
+            background-color: #45a049; /* رنگ پس‌زمینه هنگام هاور */
+        }
+    </style>
+</head>
 
 <script>
     let languageData = {
@@ -171,10 +214,52 @@
         "French": "Bienvenue dans l'application d'apprentissage des langues Engo!",
         "Turkish": "Engo Dil Öğrenme Uygulamasına Hoş Geldiniz!",
         "Korean": "Engo 언어 학습 앱에 오신 것을 환영합니다!",
-        "Japanese": "Engo言語学習アプリへようこそ！"
+        "Persian": "به اَپ اموزش زبان اِنگو خوش امدید"
     };
 
-    let languages = ["English", "German", "Russian", "Italian", "French", "Turkish", "Korean", "Japanese"];
+let page3Texts = {
+    "English": {
+        "title": "ENGO",
+        "welcome": "Welcome to the Engo Language Learning App!",
+        "start": "Let's get started with your lessons."
+    },
+    "German": {
+        "title": "ENGO",
+        "welcome": "Willkommen bei der Engo Sprachlern-App!",
+        "start": "Lass uns mit deinen Lektionen beginnen."
+    },
+    "Russian": {
+        "title": "ENGO",
+        "welcome": "Добро пожаловать в приложение для изучения языков Engo!",
+        "start": "Давайте начнем ваши уроки."
+    },
+    "Italian": {
+        "title": "ENGO",
+        "welcome": "Benvenuto nell'app di apprendimento delle lingue Engo!",
+        "start": "Iniziamo con le tue lezioni."
+    },
+    "French": {
+        "title": "ENGO",
+        "welcome": "Bienvenue dans l'application d'apprentissage des langues Engo!",
+        "start": "Commençons vos leçons."
+    },
+    "Turkish": {
+        "title": "ENGO",
+        "welcome": "Engo Dil Öğrenme Uygulamasına Hoş Geldiniz!",
+        "start": "Haydi derslerinize başlayalım."
+    },
+    "Korean": {
+        "title": "ENGO",
+        "welcome": "Engo 언어 학습 앱에 오신 것을 환영합니다!",
+        "start": "수업을 시작합시다."
+    },
+    "Persian": {
+        "title": "اِنگو",
+        "welcome": "به اَپ آموزش زبان اِنگو خوش آمدید!",
+        "start": "بیایید درس‌های شما را شروع کنیم."
+    }
+};
+    let languages = ["English", "German", "Russian", "Italian", "French", "Turkish", "Korean", "Persian"];
 
     function nextPage(page) {
         let language = document.getElementById('languageSelect').value;
@@ -207,7 +292,13 @@
 
     function chooseLanguage(language) {
         nextPage('page3');
-    }
+
+         // تغییر متن‌های صفحه سوم
+    document.querySelector('.engo-title').textContent = page3Texts[language].title;
+    document.querySelector('#page3 h2').textContent = page3Texts[language].welcome;
+    document.querySelector('#page3 p').textContent = page3Texts[language].start;
+}
+    
 </script>
 
 </body>
