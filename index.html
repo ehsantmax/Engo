@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <style>
-        /* پس‌زمینه فانتزی طلایی */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -19,23 +18,6 @@
             height: 100vh;
             overflow: hidden;
         }
-        
-        .engo-title {
-    font-size: 36px;
-    font-weight: bold;
-    color: #007bff;
-    text-align: center;
-    font-family: 'Arial', sans-serif;
-    margin-bottom: 20px;
-}
-
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* استایل‌های عمومی */
         .container {
             text-align: center;
             padding: 30px;
@@ -45,14 +27,6 @@
             width: 300px;
             transition: transform 0.3s ease-in-out;
         }
-
-        /* دکمه "Next" انیمیشن */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
         .button {
             padding: 12px 25px;
             margin-top: 20px;
@@ -64,32 +38,10 @@
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
-
         .button:hover {
             background-color: #0056b3;
             transform: scale(1.1);
-            animation: pulse 1s infinite;
         }
-
-        .button:active {
-            transform: scale(1.05);
-        }
-
-        /* نوار انتخاب زبان */
-        .language-slider {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: scroll;
-            height: 200px;
-            width: 100%;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            margin-top: 20px;
-        }
-
         .language-slider button {
             background-color: #007bff;
             color: white;
@@ -102,205 +54,110 @@
             transition: transform 0.2s, background-color 0.3s;
             width: 90%;
         }
-
         .language-slider button:hover {
             background-color: #0056b3;
             transform: scale(1.1);
         }
-
-        /* انیمیشن‌های صفحه */
-        @keyframes zoomIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .zoom-in {
-            animation: zoomIn 1s ease-in-out;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: translateY(-100%); opacity: 0; }
-            60% { transform: translateY(30px); opacity: 1; }
-            100% { transform: translateY(0); }
-        }
-
-        .bounce-in {
-            animation: bounceIn 1s ease-in-out;
-        }
-
-        .fade-in {
-            opacity: 0;
-            animation: fadeIn 1s forwards;
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
     </style>
 </head>
 <body>
-
-<div class="container fade-in" id="page1">
-    <h2>What language do you speak?</h2>
-    <select id="languageSelect">
-        <option value="English">English</option>
-        <option value="German">German</option>
-        <option value="Russian">Russian</option>
-        <option value="Italian">Italian</option>
-        <option value="French">French</option>
-        <option value="Turkish">Turkish</option>
-        <option value="Korean">Korean</option>
-        <option value="Persian">فارسی</option>
-    </select>
-    <button class="button" onclick="nextPage('page2')">Next</button>
-</div>
-
-<div class="container fade-in" id="page2" style="display:none;">
-    <h2 class="zoom-in" id="welcomeMessage">Welcome to the Engo Language Learning App!</h2>
-    <h3 class="bounce-in">Please select the language you would like to learn.</h3>
-    <div id="languageButtons" class="language-slider"></div>
-</div>
-
-<div class="container fade-in" id="page3" style="display:none;">
-    <h1 class="engo-title">ENGO</h1>
-    <h2>Welcome to the Engo Language Learning App!</h2>
-    <p>Let's get started with your lessons.</p>
-    <div class="lesson-buttons">
-        <button class="lesson-btn">Lesson 1</button>
-        <button class="lesson-btn">Lesson 2</button>
-        <button class="lesson-btn">Lesson 3</button>
-        <button class="lesson-btn">Lesson 4</button>
-        <button class="lesson-btn">Lesson 5</button>
-        <button class="lesson-btn">Lesson 6</button>
-        <button class="lesson-btn">Lesson 7</button>
-        <button class="lesson-btn">Lesson 8</button>
-        <button class="lesson-btn">Lesson 9</button>
-        <button class="lesson-btn">Lesson 10</button>
+    <div class="container" id="page1">
+        <h2>What language do you speak?</h2>
+        <select id="languageSelect" onchange="updateLanguageText()">
+            <option value="English">English</option>
+            <option value="German">German</option>
+            <option value="Russian">Russian</option>
+            <option value="Italian">Italian</option>
+            <option value="French">French</option>
+            <option value="Turkish">Turkish</option>
+            <option value="Korean">Korean</option>
+            <option value="Persian">فارسی</option>
+        </select>
+        <button class="button" onclick="nextPage()">Next</button>
     </div>
-</div>
-    <style>
-        .lesson-btn {
-            background-color: #006eff; /* رنگ پس‌زمینه */
-            color: white; /* رنگ متن */
-            padding: 10px 2em; /* فاصله داخلی */
-            text-align: center; /* مرکز چین کردن متن */
-            text-decoration: none; /* حذف خط زیر لینک */
-            display: inline-block; /* نمایش دکمه‌ها به صورت خطی */
-            font-size: 16px; /* اندازه فونت */
-            margin: 4px 2px; /* فاصله بین دکمه‌ها */
-            cursor: pointer; /* تغییر نشانگر موس به شکل دست */
-            border-radius: 8px; /* گوشه‌های گرد */
-            border: none; /* حذف حاشیه */
-            transition: background-color 0.3s; /* افزودن افکت تغییر رنگ */
-        }
+    
+    <div class="container" id="page2" style="display:none;">
+        <h2 id="languageText">Please select the language you would like to learn.</h2>
+        <div class="language-slider" id="languageButtons"></div>
+    </div>
+    
+    <div class="container" id="languageContent" style="display:none;"></div>
+    
+    <script>
+        const languageData = {
+            "English": {
+                greeting: "Welcome to English lessons!",
+                selectMessage: "Please select the language you would like to learn."
+            },
+            "German": {
+                greeting: "Willkommen zu Deutschunterricht!",
+                selectMessage: "Bitte wählen Sie die Sprache, die Sie lernen möchten."
+            },
+            "Russian": {
+                greeting: "Добро пожаловать на уроки русского!",
+                selectMessage: "Пожалуйста, выберите язык, который вы хотите изучать."
+            },
+            "Italian": {
+                greeting: "Benvenuto nelle lezioni di italiano!",
+                selectMessage: "Si prega di selezionare la lingua che desideri imparare."
+            },
+            "French": {
+                greeting: "Bienvenue aux leçons de français!",
+                selectMessage: "Veuillez sélectionner la langue que vous souhaitez apprendre."
+            },
+            "Turkish": {
+                greeting: "Türkçe derslerine hoş geldiniz!",
+                selectMessage: "Öğrenmek istediğiniz dili seçin."
+            },
+            "Korean": {
+                greeting: "한국어 수업에 오신 것을 환영합니다!",
+                selectMessage: "배울 언어를 선택하십시오."
+            },
+            "Persian": {
+                greeting: "به کلاس‌های فارسی خوش آمدید!",
+                selectMessage: "لطفاً زبان مورد نظر خود را برای یادگیری انتخاب کنید."
+            }
+        };
 
-        .lesson-btn:hover {
-            background-color: #45a049; /* رنگ پس‌زمینه هنگام هاور */
-        }
-    </style>
-</head>
-
-<script>
-    let languageData = {
-        "English": "Welcome to the Engo Language Learning App!",
-        "German": "Willkommen bei der Engo Sprachlern-App!",
-        "Russian": "Добро пожаловать в приложение для изучения языков Engo!",
-        "Italian": "Benvenuto nell'app di apprendimento delle lingue Engo!",
-        "French": "Bienvenue dans l'application d'apprentissage des langues Engo!",
-        "Turkish": "Engo Dil Öğrenme Uygulamasına Hoş Geldiniz!",
-        "Korean": "Engo 언어 학습 앱에 오신 것을 환영합니다!",
-        "Persian": "به اَپ اموزش زبان اِنگو خوش امدید"
-    };
-
-let page3Texts = {
-    "English": {
-        "title": "ENGO",
-        "welcome": "Welcome to the Engo Language Learning App!",
-        "start": "Let's get started with your lessons."
-    },
-    "German": {
-        "title": "ENGO",
-        "welcome": "Willkommen bei der Engo Sprachlern-App!",
-        "start": "Lass uns mit deinen Lektionen beginnen."
-    },
-    "Russian": {
-        "title": "ENGO",
-        "welcome": "Добро пожаловать в приложение для изучения языков Engo!",
-        "start": "Давайте начнем ваши уроки."
-    },
-    "Italian": {
-        "title": "ENGO",
-        "welcome": "Benvenuto nell'app di apprendimento delle lingue Engo!",
-        "start": "Iniziamo con le tue lezioni."
-    },
-    "French": {
-        "title": "ENGO",
-        "welcome": "Bienvenue dans l'application d'apprentissage des langues Engo!",
-        "start": "Commençons vos leçons."
-    },
-    "Turkish": {
-        "title": "ENGO",
-        "welcome": "Engo Dil Öğrenme Uygulamasına Hoş Geldiniz!",
-        "start": "Haydi derslerinize başlayalım."
-    },
-    "Korean": {
-        "title": "ENGO",
-        "welcome": "Engo 언어 학습 앱에 오신 것을 환영합니다!",
-        "start": "수업을 시작합시다."
-    },
-    "Persian": {
-        "title": "اِنگو",
-        "welcome": "به اَپ آموزش زبان اِنگو خوش آمدید!",
-        "start": "بیایید درس‌های شما را شروع کنیم."
-    }
-};
-    let languages = ["English", "German", "Russian", "Italian", "French", "Turkish", "Korean", "Persian"];
-
-    function nextPage(page) {
-        let language = document.getElementById('languageSelect').value;
-
-        if (page === 'page2') {
-            let welcomeMessage = document.getElementById('welcomeMessage');
-            welcomeMessage.textContent = languageData[language];
+        function nextPage() {
+            const selectedLanguage = document.getElementById('languageSelect').value;
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
 
             let languageButtonsDiv = document.getElementById('languageButtons');
-            languageButtonsDiv.innerHTML = ''; // پاک کردن دکمه‌های قبلی
-            languages.forEach(lang => {
+            languageButtonsDiv.innerHTML = '';
+            Object.keys(languageData).forEach(lang => {
                 let button = document.createElement('button');
                 button.classList.add('button');
                 button.textContent = lang;
-                button.onclick = () => chooseLanguage(lang);
+                button.onclick = () => showLanguagePage(lang);
                 languageButtonsDiv.appendChild(button);
             });
+
+            // Update message according to the selected language
+            document.getElementById('languageText').textContent = languageData[selectedLanguage].selectMessage;
         }
 
-        // Hide all pages
-        document.getElementById('page1').style.display = 'none';
-        document.getElementById('page2').style.display = 'none';
-        document.getElementById('page3').style.display = 'none';
+        function showLanguagePage(language) {
+            document.getElementById('page2').style.display = 'none';
+            const contentDiv = document.getElementById('languageContent');
+            contentDiv.style.display = 'block';
+            contentDiv.innerHTML = `
+                <h2>${languageData[language].greeting}</h2>
+                <p>Now you can start learning ${language}!</p>
+                <button class="button" onclick="goBack()">Back</button>
+            `;
+        }
 
-        // Show the requested page with fade-in animation
-        let nextPage = document.getElementById(page);
-        nextPage.style.display = 'block';
-        nextPage.classList.add('fade-in');
-    }
+        function goBack() {
+            document.getElementById('languageContent').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+        }
 
-    function chooseLanguage(language) {
-        nextPage('page3');
-
-         // تغییر متن‌های صفحه سوم
-    document.querySelector('.engo-title').textContent = page3Texts[language].title;
-    document.querySelector('#page3 h2').textContent = page3Texts[language].welcome;
-    document.querySelector('#page3 p').textContent = page3Texts[language].start;
-}
-    
-</script>
-
-
+        function updateLanguageText() {
+            const selectedLanguage = document.getElementById('languageSelect').value;
+            document.getElementById('languageText').textContent = languageData[selectedLanguage].selectMessage;
+        }
+    </script>
 </body>
 </html>
