@@ -1,174 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <style>
+        /* طراحی مینیمال و مدرن */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(45deg, #ffd700, #ff6347, #ff8c00);
-            background-size: 400% 400%;
-            animation: gradientAnimation 10s ease infinite;
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
-        }
-        .container {
             text-align: center;
-            padding: 30px;
-            border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            transition: transform 0.3s ease-in-out;
+            flex-direction: column;
+            transition: opacity 0.5s ease-in-out;
         }
+
+        /* استایل دکمه‌ها */
         .button {
             padding: 12px 25px;
             margin-top: 20px;
-            background-color: #007bff;
+            background: black;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.3s ease;
         }
+
         .button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
+            background: #333;
+            transform: scale(1.05);
         }
-        .language-slider button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            padding: 10px;
-            margin: 5px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.3s;
-            width: 90%;
-        }
-        .language-slider button:hover {
-            background-color: #0056b3;
-            transform: scale(1.1);
+
+        /* افکت Fade بین صفحات */
+        .hidden {
+            display: none;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="page1">
-        <h2>What language do you speak?</h2>
-        <select id="languageSelect" onchange="updateLanguageText()">
-            <option value="English">English</option>
-            <option value="German">German</option>
-            <option value="Russian">Russian</option>
-            <option value="Italian">Italian</option>
-            <option value="French">French</option>
-            <option value="Turkish">Turkish</option>
-            <option value="Korean">Korean</option>
-            <option value="Persian">فارسی</option>
-        </select>
-        <button class="button" onclick="nextPage()">Next</button>
+    <!-- صفحه ۱ -->
+    <div id="page1">
+        <h2>📢 Important announcement for dear users 📢</h2>
+        <button class="button" onclick="nextPage(1)">Next</button>
     </div>
     
-    <div class="container" id="page2" style="display:none;">
-        <h2 id="languageText">Please select the language you would like to learn.</h2>
-        <div class="language-slider" id="languageButtons"></div>
+    <!-- صفحه ۲ -->
+    <div id="page2" class="hidden">
+        <h2>Select Your Language</h2>
+        <button class="button" onclick="nextPage(2)">Next</button>
     </div>
     
-    <div class="container" id="languageContent" style="display:none;"></div>
+    <!-- صفحه ۳ -->
+    <div id="page3" class="hidden">
+        <h2>Start Learning Now!</h2>
+        <button class="button" onclick="goBack()">Back</button>
+    </div>
     
     <script>
-        const languageData = {
-            "English": {
-                greeting: "Welcome to English lessons!",
-                selectMessage: "Please select the language you would like to learn."
-            },
-            "German": {
-                greeting: "Willkommen zu Deutschunterricht!",
-                selectMessage: "Bitte wählen Sie die Sprache, die Sie lernen möchten."
-            },
-            "Russian": {
-                greeting: "Добро пожаловать на уроки русского!",
-                selectMessage: "Пожалуйста, выберите язык, который вы хотите изучать."
-            },
-            "Italian": {
-                greeting: "Benvenuto nelle lezioni di italiano!",
-                selectMessage: "Si prega di selezionare la lingua che desideri imparare."
-            },
-            "French": {
-                greeting: "Bienvenue aux leçons de français!",
-                selectMessage: "Veuillez sélectionner la langue que vous souhaitez apprendre."
-            },
-            "Turkish": {
-                greeting: "Türkçe derslerine hoş geldiniz!",
-                selectMessage: "Öğrenmek istediğiniz dili seçin."
-            },
-            "Korean": {
-                greeting: "한국어 수업에 오신 것을 환영합니다!",
-                selectMessage: "배울 언어를 선택하십시오."
-            },
-            "Persian": {
-                greeting: "به کلاس‌های فارسی خوش آمدید!",
-                selectMessage: "لطفاً زبان مورد نظر خود را برای یادگیری انتخاب کنید."
-            }
-        };
-
-        function nextPage() {
-            const selectedLanguage = document.getElementById('languageSelect').value;
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
-
-            let languageButtonsDiv = document.getElementById('languageButtons');
-            languageButtonsDiv.innerHTML = '';
-            Object.keys(languageData).forEach(lang => {
-                let button = document.createElement('button');
-                button.classList.add('button');
-                button.textContent = lang;
-                button.onclick = () => showLanguagePage(lang);
-                languageButtonsDiv.appendChild(button);
-            });
-
-            // Update message according to the selected language
-            document.getElementById('languageText').textContent = languageData[selectedLanguage].selectMessage;
-        }
-
-        function showLanguagePage(language) {
-            document.getElementById('page2').style.display = 'none';
-            const contentDiv = document.getElementById('languageContent');
-            contentDiv.style.display = 'block';
-            contentDiv.innerHTML = `
-                <h2>${languageData[language].greeting}</h2>
-                <p>Now you can start learning ${language}!</p>
-                <button class="button" onclick="goBack()">Back</button>
-            `;
+        function nextPage(page) {
+            document.getElementById(`page${page}`).classList.add('hidden');
+            document.getElementById(`page${page + 1}`).classList.remove('hidden');
         }
 
         function goBack() {
-            document.getElementById('languageContent').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
-        }
-
-        function updateLanguageText() {
-            const selectedLanguage = document.getElementById('languageSelect').value;
-            document.getElementById('languageText').textContent = languageData[selectedLanguage].selectMessage;
+            document.getElementById('page3').classList.add('hidden');
+            document.getElementById('page2').classList.remove('hidden');
         }
     </script>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-    let tg = window.Telegram.WebApp; // گرفتن اطلاعات تلگرام وب اپ
-    
-    // فعال‌سازی حالت تمام صفحه و حذف حاشیه‌ها
-    tg.expand(); // فعال‌سازی حالت تمام صفحه
-    tg.setFullscreen(true); // این خط برای حذف نوار بالایی و پایین و رفتن به حالت فول اسکرین است
-</script>
 </body>
 </html>
