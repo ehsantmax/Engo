@@ -1,137 +1,33 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>بازی فانتزی</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background-color: #000;
-    }
-
-    canvas {
-      display: block;
-    }
-
-    /* افکت نورانی */
-    .glow {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(0, 255, 255, 0.5), rgba(0, 0, 0, 0.8));
-      z-index: -1;
-      animation: pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Button Page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <div class="glow"></div>
-  <canvas id="3dCanvas"></canvas>
+    <button onclick="nextPage()">Next</button>
 
-  <script>
-    const canvas = document.getElementById('3dCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // کره متحرک
-    const sphere = {
-      radius: 100,
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      angleX: 0,
-      angleY: 0,
-      rotationSpeed: 0.02
-    };
-
-    // ایجاد ذرات
-    function createParticles(x, y) {
-      for (let i = 0; i < 50; i++) {
-        particles.push({
-          x: x,
-          y: y,
-          radius: Math.random() * 3 + 1,
-          opacity: 1,
-          speedX: Math.random() * 2 - 1,
-          speedY: Math.random() * 2 - 1,
-          color: `rgba(0, 255, 255, ${Math.random()})`
-        });
-      }
-    }
-
-    // آپدیت کردن ذرات
-    function updateParticles() {
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.opacity -= 0.02;
-        if (p.opacity <= 0) {
-          particles.splice(i, 1);
-          i--;
+    <script>
+        function nextPage() {
+            alert('Next page functionality goes here!');
+            // You can replace the alert with actual navigation logic
         }
-      }
-    }
-
-    // کشیدن کره
-    function drawSphere() {
-      ctx.save();
-      ctx.translate(sphere.x, sphere.y);
-
-      // چرخش کره
-      ctx.rotate(sphere.angleX);
-      ctx.rotate(sphere.angleY);
-
-      // رسم کره
-      ctx.beginPath();
-      ctx.arc(0, 0, sphere.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    // رسم ذرات
-    function drawParticles() {
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      }
-    }
-
-    // آپدیت و کشیدن تمامی موارد
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawSphere();
-      updateParticles();
-      drawParticles();
-      sphere.angleX += sphere.rotationSpeed;
-      sphere.angleY += sphere.rotationSpeed;
-      requestAnimationFrame(animate);
-    }
-
-    // افزودن رویداد کلیک برای ایجاد ذرات
-    canvas.addEventListener('click', (e) => {
-      createParticles(e.clientX, e.clientY);
-    });
-
-    animate();
-  </script>
+    </script>
 </body>
 </html>
