@@ -3,121 +3,245 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بازی با کلاس</title>
+  <title>بازی نات کوین پیشرفته</title>
   <style>
+    /* استایل‌های پس‌زمینه و فونت */
     body {
-      font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(45deg, #ff6b6b, #f0a500);
-      overflow: hidden;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      font-family: 'Tahoma', sans-serif;
+      direction: rtl;
+      color: #fff;
     }
-    
+    /* کانتینر بازی */
     .game-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 15px;
       text-align: center;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 50px;
-      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(10px);
-      width: 300px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
-
     h1 {
-      font-size: 28px;
-      color: #333;
+      margin: 0;
+      padding: 10px;
     }
-
     .score {
-      font-size: 24px;
-      color: #333;
-      margin-bottom: 20px;
+      font-size: 28px;
+      margin: 10px 0;
     }
-
-    .options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .button {
-      background: #28a745;
-      color: white;
-      font-size: 18px;
-      padding: 15px;
-      border: none;
+    /* نوار انرژی */
+    .energy-bar {
+      width: 100%;
+      height: 20px;
+      background: #555;
       border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .energy-fill {
+      height: 100%;
+      width: 100%;
+      background: #76c7c0;
+      transition: width 0.5s;
+    }
+    /* دکمه سکه */
+    .coin-button {
+      width: 150px;
+      height: 150px;
+      background: url('https://i.imgur.com/2xRkrkM.png') no-repeat center center;
+      background-size: contain;
+      border: none;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      outline: none;
+      transition: transform 0.1s;
+      margin: 20px 0;
     }
-
-    .button:hover {
-      transform: scale(1.1);
-      background: #218838;
-    }
-
-    .button:active {
+    .coin-button:active {
       transform: scale(0.95);
     }
-    
-    .background-animation {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://www.example.com/your-background-image.jpg') center center no-repeat;
-      background-size: cover;
-      z-index: -1;
-      animation: moveBackground 10s infinite linear;
+    /* دکمه‌های توربو و ارتقاء */
+    .booster-btn {
+      background: #ff9800;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      margin: 5px;
+      transition: background 0.3s;
     }
-
-    @keyframes moveBackground {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: -100% -100%;
-      }
+    .booster-btn:hover {
+      background: #e68900;
+    }
+    .booster-info {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    /* بخش ارتقاءها */
+    .upgrade-section {
+      margin-top: 20px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .upgrade-section h2 {
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+    .upgrade-option {
+      margin: 10px 0;
+      padding: 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+    .upgrade-option:last-child {
+      border-bottom: none;
+    }
+    .upgrade-section button {
+      background: #3f51b5;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      margin-top: 5px;
+      transition: background 0.3s;
+    }
+    .upgrade-section button:hover {
+      background: #303f9f;
     }
   </style>
 </head>
 <body>
-  <div class="background-animation"></div>
   <div class="game-container">
-    <h1>بازی جذاب</h1>
-    <p class="score">امتیاز: <span id="score">0</span></p>
-    <div class="options">
-      <button class="button" id="option1">گزینه 1</button>
-      <button class="button" id="option2">گزینه 2</button>
-      <button class="button" id="option3">گزینه 3</button>
-      <button class="button" id="option4">گزینه 4</button>
+    <h1>بازی نات کوین پیشرفته</h1>
+    <div class="score">نات کوین: <span id="score">0</span></div>
+    <div class="energy-bar">
+      <div class="energy-fill" id="energyFill"></div>
+    </div>
+    <button class="coin-button" id="coinButton"></button>
+    <div class="booster-info">ضریب کلیک: <span id="multiplier">1</span>x</div>
+    <button class="booster-btn" id="turboBtn">توربو (فعالسازی موقت)</button>
+    <!-- بخش ارتقاء با چند گزینه -->
+    <div class="upgrade-section">
+      <h2>ارتقاءها</h2>
+      <div class="upgrade-option">
+        <span>افزایش ضریب کلیک (+1x): هزینه 100 نات کوین</span>
+        <button onclick="upgradeMultiplier()">ارتقاء</button>
+      </div>
+      <div class="upgrade-option">
+        <span>افزایش ظرفیت انرژی: هزینه 200 نات کوین</span>
+        <button onclick="upgradeMaxEnergy()">ارتقاء</button>
+      </div>
+      <div class="upgrade-option">
+        <span>خرید ربات ضربه خودکار (Auto Tap): هزینه 300 نات کوین</span>
+        <button onclick="buyAutoTap()">خرید ربات ضربه</button>
+      </div>
     </div>
   </div>
 
   <script>
+    // تنظیم اولیه متغیرها
     let score = 0;
+    let multiplier = 1;
+    let energy = 100; // درصد انرژی اولیه
+    let maxEnergy = 100;
+    let energyRegenRate = 0.5; // درصد انرژی اضافه شده هر 100ms
+    let turboActive = false;
+    const turboMultiplier = 5;
+    const turboDuration = 5000; // 5 ثانیه
 
-    // گرفتن المان‌های HTML
-    const scoreElement = document.getElementById('score');
-    const options = document.querySelectorAll('.button');
+    const scoreDisplay = document.getElementById('score');
+    const energyFill = document.getElementById('energyFill');
+    const multiplierDisplay = document.getElementById('multiplier');
+    const coinButton = document.getElementById('coinButton');
+    const turboBtn = document.getElementById('turboBtn');
 
-    // تابع افزایش امتیاز
-    function increaseScore(points) {
-      score += points;
-      scoreElement.textContent = score;
+    // به‌روز‌رسانی نمایش نوار انرژی
+    function updateEnergyDisplay() {
+      energyFill.style.width = energy + '%';
     }
 
-    // گزینه‌ها
-    options.forEach((option, index) => {
-      option.addEventListener('click', () => {
-        increaseScore(Math.floor(Math.random() * 10) + 1); // به طور تصادفی امتیاز می‌دهیم
-      });
+    // کلیک روی دکمه سکه
+    coinButton.addEventListener('click', () => {
+      if (energy >= 5) { // هر کلیک 5 درصد انرژی مصرف می‌کند
+        let clickValue = multiplier;
+        if (turboActive) clickValue *= turboMultiplier;
+        score += clickValue;
+        scoreDisplay.textContent = score;
+        energy -= 5;
+        if (energy < 0) energy = 0;
+        updateEnergyDisplay();
+      }
     });
+
+    // شارژ مجدد نوار انرژی
+    setInterval(() => {
+      if (energy < maxEnergy) {
+        energy += energyRegenRate;
+        if (energy > maxEnergy) energy = maxEnergy;
+        updateEnergyDisplay();
+      }
+    }, 100);
+
+    // فعال‌سازی توربو (ضریب ضربه افزایش می‌یابد)
+    turboBtn.addEventListener('click', () => {
+      if (!turboActive) {
+        turboActive = true;
+        turboBtn.disabled = true;
+        turboBtn.textContent = 'توربو فعال...';
+        setTimeout(() => {
+          turboActive = false;
+          turboBtn.disabled = false;
+          turboBtn.textContent = 'توربو (فعالسازی موقت)';
+        }, turboDuration);
+      }
+    });
+
+    // ارتقاء ضریب کلیک (هر بار +1x)
+    function upgradeMultiplier() {
+      if (score >= 100) {
+        score -= 100;
+        multiplier += 1;
+        scoreDisplay.textContent = score;
+        multiplierDisplay.textContent = multiplier;
+      } else {
+        alert('امتیاز کافی برای ارتقاء ضریب کلیک ندارید!');
+      }
+    }
+
+    // ارتقاء ظرفیت نوار انرژی (هر بار +20 درصد به ظرفیت)
+    function upgradeMaxEnergy() {
+      if (score >= 200) {
+        score -= 200;
+        maxEnergy += 20;
+        scoreDisplay.textContent = score;
+        updateEnergyDisplay();
+      } else {
+        alert('امتیاز کافی برای ارتقاء ظرفیت انرژی ندارید!');
+      }
+    }
+
+    // خرید ربات ضربه خودکار: به مدت 10 ثانیه هر 500ms دکمه سکه به طور خودکار کلیک می‌شود
+    function buyAutoTap() {
+      if (score >= 300) {
+        score -= 300;
+        scoreDisplay.textContent = score;
+        const autoTapDuration = 10000; // 10 ثانیه
+        const autoTapInterval = setInterval(() => {
+          coinButton.click();
+        }, 500);
+        setTimeout(() => {
+          clearInterval(autoTapInterval);
+        }, autoTapDuration);
+      } else {
+        alert('امتیاز کافی برای خرید ربات ضربه خودکار ندارید!');
+      }
+    }
   </script>
 </body>
 </html>
