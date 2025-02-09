@@ -1,167 +1,123 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی شوتر چندمرحله‌ای</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: black; color: white; text-align: center; font-family: Arial, sans-serif; overflow: hidden; }
-        .game-container { position: relative; width: 100%; max-width: 400px; height: 600px; margin: auto; border: 2px solid white; overflow: hidden; }
-        .player { width: 50px; height: 50px; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: url('player.gif') no-repeat center/cover; }
-        .enemy, .boss { width: 40px; height: 40px; position: absolute; top: 0; background: url('enemy.gif') no-repeat center/cover; }
-        .boss { width: 80px; height: 80px; background: url('boss.gif') no-repeat center/cover; }
-        .bullet { width: 5px; height: 15px; position: absolute; background: url('bullet.gif') no-repeat center/cover; }
-        .explosion { width: 40px; height: 40px; position: absolute; background: url('explosion.gif') no-repeat center/cover; }
-        .shop { display: none; position: absolute; top: 10%; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); padding: 20px; border: 2px solid white; text-align: center; }
-        .shop button { padding: 10px; margin: 5px; font-size: 16px; }
-        .controls { margin-top: 10px; }
-        button { padding: 10px; margin: 5px; font-size: 18px; cursor: pointer; }
-        #score, #hp, #level { font-size: 20px; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بازی با کلاس</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(45deg, #ff6b6b, #f0a500);
+      overflow: hidden;
+    }
+    
+    .game-container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 50px;
+      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #333;
+    }
+
+    .score {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .button {
+      background: #28a745;
+      color: white;
+      font-size: 18px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .button:hover {
+      transform: scale(1.1);
+      background: #218838;
+    }
+
+    .button:active {
+      transform: scale(0.95);
+    }
+    
+    .background-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.example.com/your-background-image.jpg') center center no-repeat;
+      background-size: cover;
+      z-index: -1;
+      animation: moveBackground 10s infinite linear;
+    }
+
+    @keyframes moveBackground {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -100% -100%;
+      }
+    }
+  </style>
 </head>
 <body>
-
-    <h1>🎯 بازی شوتر چندمرحله‌ای</h1>
-    <h2 id="score">امتیاز: 0</h2>
-    <h2 id="hp">❤️ جان: 3</h2>
-    <h2 id="level">🚀 مرحله: 1</h2>
-    <div class="game-container" id="game-container">
-        <div class="player" id="player"></div>
+  <div class="background-animation"></div>
+  <div class="game-container">
+    <h1>بازی جذاب</h1>
+    <p class="score">امتیاز: <span id="score">0</span></p>
+    <div class="options">
+      <button class="button" id="option1">گزینه 1</button>
+      <button class="button" id="option2">گزینه 2</button>
+      <button class="button" id="option3">گزینه 3</button>
+      <button class="button" id="option4">گزینه 4</button>
     </div>
+  </div>
 
-    <div class="controls">
-        <button onclick="moveLeft()">⬅️</button>
-        <button onclick="shoot()">🔫 شلیک</button>
-        <button onclick="moveRight()">➡️</button>
-        <button onclick="openShop()">🛒 خرید سلاح</button>
-    </div>
+  <script>
+    let score = 0;
 
-    <div class="shop" id="shop">
-        <h2>🛒 فروشگاه</h2>
-        <p>💰 امتیاز شما: <span id="shop-score">0</span></p>
-        <button onclick="buyWeapon(10, 'red')">🔫 گلوله قوی (10 امتیاز)</button>
-        <button onclick="buyWeapon(20, 'blue')">💥 انفجاری (20 امتیاز)</button>
-        <button onclick="closeShop()">❌ بستن</button>
-    </div>
+    // گرفتن المان‌های HTML
+    const scoreElement = document.getElementById('score');
+    const options = document.querySelectorAll('.button');
 
-    <script>
-        let player = document.getElementById("player");
-        let gameContainer = document.getElementById("game-container");
-        let scoreElement = document.getElementById("score");
-        let hpElement = document.getElementById("hp");
-        let levelElement = document.getElementById("level");
-        let shopElement = document.getElementById("shop");
-        let shopScore = document.getElementById("shop-score");
+    // تابع افزایش امتیاز
+    function increaseScore(points) {
+      score += points;
+      scoreElement.textContent = score;
+    }
 
-        let playerPos = 50; 
-        let score = 0;
-        let hp = 3;
-        let level = 1;
-        let bulletColor = "yellow"; 
-
-        function moveLeft() {
-            if (playerPos > 5) {
-                playerPos -= 5;
-                player.style.left = playerPos + "%";
-            }
-        }
-
-        function moveRight() {
-            if (playerPos < 95) {
-                playerPos += 5;
-                player.style.left = playerPos + "%";
-            }
-        }
-
-        function shoot() {
-            let bullet = document.createElement("div");
-            bullet.classList.add("bullet");
-            bullet.style.backgroundColor = bulletColor;
-            bullet.style.left = player.offsetLeft + 22 + "px";
-            bullet.style.bottom = "50px";
-            gameContainer.appendChild(bullet);
-
-            let bulletInterval = setInterval(() => {
-                let bulletBottom = parseInt(bullet.style.bottom);
-                if (bulletBottom > 580) {
-                    clearInterval(bulletInterval);
-                    bullet.remove();
-                } else {
-                    bullet.style.bottom = bulletBottom + 5 + "px";
-                    checkCollision(bullet);
-                }
-            }, 10);
-        }
-
-        function spawnEnemy() {
-            let enemy = document.createElement("div");
-            enemy.classList.add("enemy");
-            enemy.style.left = Math.random() * 90 + "%";
-            enemy.style.top = "0px";
-            gameContainer.appendChild(enemy);
-
-            let enemyInterval = setInterval(() => {
-                let enemyTop = parseInt(enemy.style.top);
-                if (enemyTop > 550) {
-                    clearInterval(enemyInterval);
-                    enemy.remove();
-                    takeDamage();
-                } else {
-                    enemy.style.top = enemyTop + (1 + level) + "px";
-                }
-            }, 50);
-        }
-
-        function checkCollision(bullet) {
-            let enemies = document.querySelectorAll(".enemy");
-            enemies.forEach(enemy => {
-                let bulletRect = bullet.getBoundingClientRect();
-                let enemyRect = enemy.getBoundingClientRect();
-                if (
-                    bulletRect.top < enemyRect.bottom &&
-                    bulletRect.bottom > enemyRect.top &&
-                    bulletRect.left < enemyRect.right &&
-                    bulletRect.right > enemyRect.left
-                ) {
-                    bullet.remove();
-                    enemy.remove();
-                    score += 10;
-                    scoreElement.innerText = "امتیاز: " + score;
-                    shopScore.innerText = score;
-                    if (score % 50 === 0) nextLevel();
-                }
-            });
-        }
-
-        function nextLevel() {
-            level++;
-            levelElement.innerText = "🚀 مرحله: " + level;
-            gameContainer.style.background = `url('background${level}.jpg') no-repeat center/cover`;
-        }
-
-        function openShop() {
-            shopElement.style.display = "block";
-        }
-
-        function closeShop() {
-            shopElement.style.display = "none";
-        }
-
-        function buyWeapon(cost, color) {
-            if (score >= cost) {
-                score -= cost;
-                bulletColor = color;
-                scoreElement.innerText = "امتیاز: " + score;
-                shopScore.innerText = score;
-                alert("✅ سلاح خریداری شد!");
-            } else {
-                alert("❌ امتیاز کافی ندارید!");
-            }
-        }
-
-        setInterval(spawnEnemy, 2000);
-    </script>
-
+    // گزینه‌ها
+    options.forEach((option, index) => {
+      option.addEventListener('click', () => {
+        increaseScore(Math.floor(Math.random() * 10) + 1); // به طور تصادفی امتیاز می‌دهیم
+      });
+    });
+  </script>
 </body>
 </html>
