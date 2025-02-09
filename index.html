@@ -3,284 +3,135 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>بازی نات کوین - گرافیک پیشرفته</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <title>بازی فانتزی</title>
   <style>
-    /* تنظیمات پایه */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Orbitron', sans-serif;
-      background: #000;
-      overflow: hidden;
-      color: #fff;
-      height: 100%;
       margin: 0;
-    }
-    /* پس‌زمینه با ذرات متحرک */
-    #bgCanvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-    }
-    /* افکت گرادیان متحرک */
-    .animated-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, rgba(0,150,255,0.2), rgba(255,0,150,0.2), rgba(0,255,150,0.2));
-      background-size: 400% 400%;
-      animation: gradientShift 20s ease infinite;
-      z-index: -1;
-    }
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    /* کانتینر بازی */
-    .game-container {
-      position: relative;
-      max-width: 500px;
-      margin: 50px auto;
-      background: rgba(20,20,20,0.85);
-      border: 2px solid #0ff;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 0 30px #0ff;
-      backdrop-filter: blur(10px);
-    }
-    .game-header {
-      font-size: 40px;
-      margin-bottom: 20px;
-      color: #0ff;
-      text-shadow: 0 0 10px #0ff;
-    }
-    .score {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-    .energy-bar {
-      width: 100%;
-      height: 25px;
-      background: #333;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-    .energy-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, #00ffea, #0099ff);
-      transition: width 0.3s ease;
-    }
-    /* دکمه سکه با انیمیشن چرخش */
-    .coin-button {
-      width: 180px;
-      height: 180px;
-      border: none;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffea00, #ffaa00);
-      box-shadow: 0 0 25px #ffaa00;
-      cursor: pointer;
-      margin-bottom: 30px;
-      position: relative;
+      padding: 0;
       overflow: hidden;
+      background-color: #000;
     }
-    .coin-button:active {
-      transform: scale(0.95);
+
+    canvas {
+      display: block;
     }
-    .coin-icon {
+
+    /* افکت نورانی */
+    .glow {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background: url('https://i.imgur.com/2xRkrkM.png') no-repeat center center;
-      background-size: 80%;
-      animation: spin 3s linear infinite;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.5), rgba(0, 0, 0, 0.8));
+      z-index: -1;
+      animation: pulse 3s ease-in-out infinite;
     }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    /* دکمه‌های نئونی */
-    .booster-btn {
-      background: #ff5722;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 18px;
-      margin: 10px;
-      transition: background 0.3s;
-      box-shadow: 0 0 20px #ff5722;
-    }
-    .booster-btn:hover {
-      background: #e64a19;
-    }
-    /* بخش ارتقاء */
-    .upgrade-section {
-      margin-top: 30px;
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 15px;
-      text-align: left;
-    }
-    .upgrade-section h2 {
-      font-size: 28px;
-      text-align: center;
-      margin-bottom: 15px;
-      color: #ff5722;
-    }
-    .upgrade-option {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 10px 0;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-    .upgrade-option:last-child {
-      border-bottom: none;
-    }
-    .upgrade-option button {
-      background: #4caf50;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      color: #fff;
-      transition: background 0.3s;
-      box-shadow: 0 0 10px #4caf50;
-    }
-    .upgrade-option button:hover {
-      background: #388e3c;
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
-  <div class="animated-overlay"></div>
-
-  <div class="game-container">
-    <div class="game-header">بازی نات کوین</div>
-    <div class="score">امتیاز: <span id="score">0</span></div>
-    <div class="energy-bar">
-      <div class="energy-fill" id="energyFill"></div>
-    </div>
-    <button class="coin-button" id="coinButton">
-      <div class="coin-icon"></div>
-    </button>
-    <div>
-      <button class="booster-btn" id="turboBtn">توربو</button>
-    </div>
-    <div class="upgrade-section">
-      <h2>ارتقاءها</h2>
-      <div class="upgrade-option">
-        <span>ضریب کلیک +1x (هزینه: 100)</span>
-        <button onclick="upgradeMultiplier()">ارتقاء</button>
-      </div>
-      <div class="upgrade-option">
-        <span>افزایش ظرفیت انرژی (+20%) (هزینه: 200)</span>
-        <button onclick="upgradeMaxEnergy()">ارتقاء</button>
-      </div>
-      <div class="upgrade-option">
-        <span>ربات کلیک خودکار (10 ثانیه) (هزینه: 300)</span>
-        <button onclick="buyAutoTap()">خرید</button>
-      </div>
-    </div>
-  </div>
+  <div class="glow"></div>
+  <canvas id="3dCanvas"></canvas>
 
   <script>
-    let score = 0;
-    let multiplier = 1;
-    let energy = 100;
-    let maxEnergy = 100;
-    let energyRegenRate = 0.5; 
-    let turboActive = false;
-    const turboMultiplier = 5;
-    const turboDuration = 5000; 
-
-    const scoreDisplay = document.getElementById('score');
-    const energyFill = document.getElementById('energyFill');
-    const coinButton = document.getElementById('coinButton');
-    const turboBtn = document.getElementById('turboBtn');
-
-    function updateEnergyDisplay() {
-      energyFill.style.width = energy + '%';
-    }
-
-    coinButton.addEventListener('click', () => {
-      if (energy >= 5) {
-        let clickValue = multiplier;
-        if (turboActive) clickValue *= turboMultiplier;
-        score += clickValue;
-        scoreDisplay.textContent = score;
-        energy -= 5;
-        if (energy < 0) energy = 0;
-        updateEnergyDisplay();
-      }
-    });
-
-    setInterval(() => {
-      if (energy < maxEnergy) {
-        energy += energyRegenRate;
-        if (energy > maxEnergy) energy = maxEnergy;
-        updateEnergyDisplay();
-      }
-    }, 100);
-
-    turboBtn.addEventListener('click', () => {
-      if (!turboActive) {
-        turboActive = true;
-        turboBtn.disabled = true;
-        turboBtn.textContent = 'توربو فعال...';
-        setTimeout(() => {
-          turboActive = false;
-          turboBtn.disabled = false;
-          turboBtn.textContent = 'توربو';
-        }, turboDuration);
-      }
-    });
-
-    function upgradeMultiplier() {
-      if (score >= 100) {
-        score -= 100;
-        multiplier += 1;
-        scoreDisplay.textContent = score;
-      } else {
-        alert('امتیاز کافی برای ارتقاء ضریب کلیک وجود ندارد!');
-      }
-    }
-
-    function upgradeMaxEnergy() {
-      if (score >= 200) {
-        score -= 200;
-        maxEnergy += 20;
-        scoreDisplay.textContent = score;
-      } else {
-        alert('امتیاز کافی برای ارتقاء ظرفیت انرژی وجود ندارد!');
-      }
-    }
-
-    function buyAutoTap() {
-      if (score >= 300) {
-        score -= 300;
-        scoreDisplay.textContent = score;
-        const autoTapDuration = 10000; 
-        const autoTapInterval = setInterval(() => {
-          coinButton.click();
-        }, 500);
-        setTimeout(() => {
-          clearInterval(autoTapInterval);
-        }, autoTapDuration);
-      } else {
-        alert('امتیاز کافی برای خرید ربات کلیک خودکار وجود ندارد!');
-      }
-    }
-
-    const canvas = document.getElementById('bgCanvas');
+    const canvas = document.getElementById('3dCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    const numParticles = 200;
 
-    function
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // کره متحرک
+    const sphere = {
+      radius: 100,
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      angleX: 0,
+      angleY: 0,
+      rotationSpeed: 0.02
+    };
+
+    // ایجاد ذرات
+    function createParticles(x, y) {
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          radius: Math.random() * 3 + 1,
+          opacity: 1,
+          speedX: Math.random() * 2 - 1,
+          speedY: Math.random() * 2 - 1,
+          color: `rgba(0, 255, 255, ${Math.random()})`
+        });
+      }
+    }
+
+    // آپدیت کردن ذرات
+    function updateParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.opacity -= 0.02;
+        if (p.opacity <= 0) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    // کشیدن کره
+    function drawSphere() {
+      ctx.save();
+      ctx.translate(sphere.x, sphere.y);
+
+      // چرخش کره
+      ctx.rotate(sphere.angleX);
+      ctx.rotate(sphere.angleY);
+
+      // رسم کره
+      ctx.beginPath();
+      ctx.arc(0, 0, sphere.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // رسم ذرات
+    function drawParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      }
+    }
+
+    // آپدیت و کشیدن تمامی موارد
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawSphere();
+      updateParticles();
+      drawParticles();
+      sphere.angleX += sphere.rotationSpeed;
+      sphere.angleY += sphere.rotationSpeed;
+      requestAnimationFrame(animate);
+    }
+
+    // افزودن رویداد کلیک برای ایجاد ذرات
+    canvas.addEventListener('click', (e) => {
+      createParticles(e.clientX, e.clientY);
+    });
+
+    animate();
+  </script>
+</body>
+</html>
