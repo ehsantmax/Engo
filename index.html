@@ -3,30 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Next Button Page</title>
+    <title>Telegram Mini App</title>
     <style>
+        /* طراحی مینیمال و مدرن */
         body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            text-align: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease-in-out;
+            position: relative;
         }
-        button {
-            padding: 10px 20px;
+
+        /* استایل دکمه‌ها */
+        .button {
+            padding: 12px 25px;
+            margin-top: 20px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+
+        /* افکت Fade بین صفحات */
+        .hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        /* استایل تصویر ثابت */
+        .fixed-logo {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: auto;
+            opacity: 0.7;
+        }
+
+        /* استایل دکمه تغییر حالت دارک مود */
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            border: 2px solid #333;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #333;
+        }
+
+        /* آیکون دکمه تغییر حالت */
+        .dark-mode-icon {
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* حالت دارک مود */
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .dark-mode-toggle {
+            border-color: #ffffff;
+        }
+
+        .dark-mode .dark-mode-icon {
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
-    <button onclick="nextPage()">Next</button>
+    <!-- تصویر ثابت که در همه صفحات نمایش داده می‌شود -->
+    <img src="https://github.com/ehsantmax/Engo/blob/main/e.png?raw=true" alt="Fixed Logo" class="fixed-logo">
+
+    <!-- صفحه ۱ -->
+    <div id="page1">
+        <h2>📢 Important announcement for dear users 📢</h2>
+        <button class="button" onclick="nextPage(1)">Next</button>
+    </div>
+    
+    <!-- صفحه ۲ -->
+    <div id="page2" class="hidden">
+        <h2>Select Your Language</h2>
+        <button class="button" onclick="nextPage(2)">Next</button>
+        <button class="button" onclick="goBack(1)">Back</button>
+    </div>
+
+    <!-- صفحه ۳ -->
+    <div id="page3" class="hidden">
+        <h2>Start Learning Now!</h2>
+        <button class="button" onclick="nextPage(3)">Next</button>
+        <button class="button" onclick="goBack(2)">Back</button>
+    </div>
+
+    <!-- صفحه ۴ -->
+    <div id="page4" class="hidden">
+        <h2>Congratulations! You're Ready to Start!</h2>
+        <button class="button" onclick="goBack(3)">Back</button>
+
+        <!-- دکمه تغییر حالت دارک مود -->
+        <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+            <span class="dark-mode-icon">🌙</span>
+        </div>
+    </div>
 
     <script>
-        function nextPage() {
-            alert('Next page functionality goes here!');
-            // You can replace the alert with actual navigation logic
+        function nextPage(page) {
+            document.getElementById(`page${page}`).classList.add('hidden');
+            document.getElementById(`page${page + 1}`).classList.remove('hidden');
+        }
+
+        function goBack(page) {
+            document.getElementById(`page${page + 1}`).classList.add('hidden');
+            document.getElementById(`page${page}`).classList.remove('hidden');
+        }
+
+        // تابع تغییر وضعیت دارک مود
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
         }
     </script>
 </body>
