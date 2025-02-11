@@ -3,150 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App</title>
+    <title>بازی من</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
     <style>
-        /* طراحی مینیمال و مدرن */
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 0;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            flex-direction: column;
-            transition: opacity 0.5s ease-in-out;
-            position: relative;
-        }
-
-        /* استایل دکمه‌ها */
-        .button {
-            padding: 12px 25px;
-            margin-top: 20px;
-            background: black;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .button:hover {
-            background: #333;
-            transform: scale(1.05);
-        }
-
-        /* افکت Fade بین صفحات */
-        .hidden {
-            display: none;
-            opacity: 0;
-        }
-
-        /* استایل تصویر ثابت */
-        .fixed-logo {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 150px;
-            height: auto;
-            opacity: 0.7;
-        }
-
-        /* استایل دکمه تغییر حالت دارک مود */
-        .dark-mode-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: transparent;
-            border: 2px solid #333;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dark-mode-toggle:hover {
-            background-color: #333;
-        }
-
-        /* آیکون دکمه تغییر حالت */
-        .dark-mode-icon {
-            font-size: 20px;
-            color: #333;
-        }
-
-        /* حالت دارک مود */
-        .dark-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        .dark-mode .dark-mode-toggle {
-            border-color: #ffffff;
-        }
-
-        .dark-mode .dark-mode-icon {
-            color: #ffffff;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <!-- تصویر ثابت که در همه صفحات نمایش داده می‌شود -->
-    <img src="https://github.com/ehsantmax/Engo/blob/main/e.png?raw=true" alt="Fixed Logo" class="fixed-logo">
-
-    <!-- صفحه ۱ -->
-    <div id="page1">
-        <h2>📢 Important announcement for dear users 📢</h2>
-        <button class="button" onclick="nextPage(1)">Next</button>
-    </div>
-    
-    <!-- صفحه ۲ -->
-    <div id="page2" class="hidden">
-        <h2>Select Your Language</h2>
-        <button class="button" onclick="nextPage(2)">Next</button>
-        <button class="button" onclick="goBack(1)">Back</button>
-    </div>
-
-    <!-- صفحه ۳ -->
-    <div id="page3" class="hidden">
-        <h2>Start Learning Now!</h2>
-        <button class="button" onclick="nextPage(3)">Next</button>
-        <button class="button" onclick="goBack(2)">Back</button>
-    </div>
-
-    <!-- صفحه ۴ -->
-    <div id="page4" class="hidden">
-        <h2>Congratulations! You're Ready to Start!</h2>
-        <button class="button" onclick="goBack(3)">Back</button>
-
-        <!-- دکمه تغییر حالت دارک مود -->
-        <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-            <span class="dark-mode-icon">🌙</span>
-        </div>
-    </div>
-
     <script>
-        function nextPage(page) {
-            document.getElementById(`page${page}`).classList.add('hidden');
-            document.getElementById(`page${page + 1}`).classList.remove('hidden');
+        var config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            physics: {
+                default: 'arcade',
+                arcade: { gravity: { y: 300 }, debug: false }
+            },
+            scene: { preload: preload, create: create, update: update }
+        };
+
+        var player, cursors, platforms, coins, enemies, scoreText;
+        var score = 0;
+        var game = new Phaser.Game(config);
+
+        function preload() {
+            // تصاویر با کیفیت بالا برای شخصیت، دشمن‌ها، سکه‌ها و پس‌زمینه
+            this.load.image('sky', 'https://example.com/sky-high-res.png'); // پس‌زمینه
+            this.load.image('ground', 'https://example.com/ground-high-res.png'); // سکو
+            this.load.image('coin', 'https://example.com/coin-high-res.png'); // سکه
+            this.load.image('enemy', 'https://example.com/enemy-high-res.png'); // دشمن
+            this.load.spritesheet('player', 'https://example.com/player-spritesheet.png', { frameWidth: 32, frameHeight: 48 }); // انیمیشن شخصیت
         }
 
-        function goBack(page) {
-            document.getElementById(`page${page + 1}`).classList.add('hidden');
-            document.getElementById(`page${page}`).classList.remove('hidden');
+        function create() {
+            // پس‌زمینه
+            this.add.image(400, 300, 'sky');
+
+            // سکوها
+            platforms = this.physics.add.staticGroup();
+            platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+
+            // شخصیت آدم با انیمیشن
+            player = this.physics.add.sprite(100, 450, 'player');
+            player.setBounce(0.2);
+            player.setCollideWorldBounds(true);
+            this.physics.add.collider(player, platforms);
+            
+            // انیمیشن شخصیت
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'jump',
+                frames: [ { key: 'player', frame: 8 } ],
+                frameRate: 10
+            });
+
+            // اضافه کردن دشمن‌ها
+            enemies = this.physics.add.group({
+                key: 'enemy',
+                repeat: 3, // تعداد دشمن‌ها
+                setXY: { x: 400, y: 0, stepX: 150 }
+            });
+            enemies.children.iterate(function (enemy) {
+                enemy.setBounce(1);
+                enemy.setCollideWorldBounds(true);
+                enemy.setVelocity(Phaser.Math.Between(-200, 200), 20);
+            });
+            this.physics.add.collider(enemies, platforms);
+            this.physics.add.collider(player, enemies, hitEnemy, null, this);
+
+            // اضافه کردن سکه‌ها
+            coins = this.physics.add.group({
+                key: 'coin',
+                repeat: 10, // تعداد سکه‌ها
+                setXY: { x: 100, y: 0, stepX: 70 }
+            });
+            coins.children.iterate(function (coin) {
+                coin.setBounce(0.6);
+                coin.setCollideWorldBounds(true);
+                coin.setVelocity(Phaser.Math.Between(-100, 100), 20);
+            });
+            this.physics.add.collider(coins, platforms);
+            this.physics.add.overlap(player, coins, collectCoin, null, this);
+
+            // نمایش امتیاز
+            scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#fff' });
+
+            // کنترل‌های لمسی
+            this.input.on('pointerdown', function (pointer) {
+                if (pointer.x < game.config.width / 2) {
+                    // حرکت به سمت چپ
+                    player.setVelocityX(-160);
+                    player.anims.play('left', true);
+                } else {
+                    // حرکت به سمت راست
+                    player.setVelocityX(160);
+                    player.anims.play('right', true);
+                }
+
+                if (pointer.y < game.config.height / 2) {
+                    // پرش
+                    player.setVelocityY(-330);
+                    player.anims.play('jump', true);
+                }
+            });
         }
 
-        // تابع تغییر وضعیت دارک مود
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
+        function update() {
+            // اینجا می‌تونیم کدهای اضافی مثل انیمیشن‌های دیگه یا افکت‌ها رو اضافه کنیم
+        }
+
+        function collectCoin(player, coin) {
+            coin.disableBody(true, true);
+            score += 10;
+            scoreText.setText('Score: ' + score);
+        }
+
+        function hitEnemy(player, enemy) {
+            // اگر دشمن با شخصیت برخورد کرد، بازی تمام می‌شود یا جان کم می‌شود
+            this.physics.pause();
+            player.setTint(0xff0000);
+            scoreText.setText('Game Over');
         }
     </script>
 </body>
