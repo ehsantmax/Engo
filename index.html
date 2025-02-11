@@ -1,114 +1,185 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی غارچ خوره</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #333;
-        }
-        canvas {
-            border: 2px solid #fff;
-            background-color: #222;
-        }
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            display: flex;
-            justify-content: center;
-            width: 100%;
-        }
-        .button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px;
-            margin: 5px;
-            text-align: center;
-            font-size: 20px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .button:active {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بازی غارچ خوره</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #333;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    /* بوم بازی */
+    #gameCanvas {
+      display: block;
+      background-color: #87CEEB; /* آسمان */
+      margin: auto;
+      border: 2px solid #000;
+    }
+    /* دکمه‌های کنترلی موبایلی */
+    .controls {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 20px;
+    }
+    .btn:active {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="320"></canvas>
+  <canvas id="gameCanvas" width="480" height="320"></canvas>
+  <div class="controls">
+    <button class="btn" id="leftBtn">←</button>
+    <button class="btn" id="jumpBtn">↑</button>
+    <button class="btn" id="rightBtn">→</button>
+  </div>
 
-    <div class="controls">
-        <button class="button" onclick="moveLeft()">چپ</button>
-        <button class="button" onclick="moveRight()">راست</button>
-        <button class="button" onclick="moveUp()">بالا</button>
-        <button class="button" onclick="moveDown()">پایین</button>
-    </div>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-    <script>
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
+    // ثابت‌های فیزیکی بازی
+    const GRAVITY = 0.5;
+    
+    // تعریف بازیکن
+    const player = {
+      x: 50,
+      y: 50,
+      width: 30,
+      height: 30,
+      vx: 0,
+      vy: 0,
+      speed: 2.5,
+      jumpPower: -10,
+      onGround: false,
+      color: "#FF6347" // رنگ دلخواه؛ می‌تونید با تصویر جایگزین کنید
+    };
 
-        const player = {
-            x: 50,
-            y: 50,
-            width: 30,
-            height: 30,
-            color: "blue",
-            speed: 5
-        };
+    // آرایه‌ای از سکوی بازی (می‌توانید آن‌ها را تغییر دهید یا سکوی بیشتری اضافه کنید)
+    const platforms = [
+      {x: 0, y: 300, width: 480, height: 20},
+      {x: 100, y: 240, width: 80, height: 10},
+      {x: 250, y: 200, width: 100, height: 10},
+      {x: 400, y: 150, width: 70, height: 10}
+    ];
 
-        let enemies = [
-            { x: 200, y: 100, width: 30, height: 30, color: "red" },
-            { x: 300, y: 200, width: 30, height: 30, color: "red" }
-        ];
+    // دکمه‌های کنترل – وضعیت‌های لمسی
+    let keys = { left: false, right: false };
 
-        function drawPlayer() {
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
+    // رویدادهای لمسی برای دکمه‌ها
+    document.getElementById("leftBtn").addEventListener("touchstart", (e) => { keys.left = true; e.preventDefault(); });
+    document.getElementById("leftBtn").addEventListener("touchend", (e) => { keys.left = false; e.preventDefault(); });
+    document.getElementById("rightBtn").addEventListener("touchstart", (e) => { keys.right = true; e.preventDefault(); });
+    document.getElementById("rightBtn").addEventListener("touchend", (e) => { keys.right = false; e.preventDefault(); });
+    document.getElementById("jumpBtn").addEventListener("touchstart", (e) => { 
+      if(player.onGround) {
+        player.vy = player.jumpPower;
+        player.onGround = false;
+      }
+      e.preventDefault();
+    });
+
+    // پشتیبانی از کنترل صفحه کلید (برای تست روی کامپیوتر)
+    document.addEventListener("keydown", function(e) {
+      if(e.key === "ArrowLeft") keys.left = true;
+      if(e.key === "ArrowRight") keys.right = true;
+      if(e.key === "ArrowUp" && player.onGround) {
+        player.vy = player.jumpPower;
+        player.onGround = false;
+      }
+    });
+    document.addEventListener("keyup", function(e) {
+      if(e.key === "ArrowLeft") keys.left = false;
+      if(e.key === "ArrowRight") keys.right = false;
+    });
+
+    // به‌روزرسانی موقعیت بازیکن و اعمال قوانین فیزیکی
+    function update() {
+      // حرکت افقی بر اساس دکمه‌ها
+      if(keys.left) {
+        player.vx = -player.speed;
+      } else if(keys.right) {
+        player.vx = player.speed;
+      } else {
+        player.vx = 0;
+      }
+      
+      // اعمال گرانش
+      player.vy += GRAVITY;
+      
+      // به‌روزرسانی موقعیت بازیکن
+      player.x += player.vx;
+      player.y += player.vy;
+
+      // بررسی برخورد با سکوها
+      player.onGround = false;
+      for(let plat of platforms) {
+        if(player.x < plat.x + plat.width &&
+           player.x + player.width > plat.x &&
+           player.y < plat.y + plat.height &&
+           player.y + player.height > plat.y) {
+          // اگر بازیکن در حال سقوط است، از برخورد بالا بریده می‌شه
+          if(player.vy > 0) {
+            player.y = plat.y - player.height;
+            player.vy = 0;
+            player.onGround = true;
+          }
         }
+      }
 
-        function drawEnemies() {
-            enemies.forEach(enemy => {
-                ctx.fillStyle = enemy.color;
-                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-            });
-        }
+      // جلوگیری از خروج بازیکن از مرزهای بوم
+      if(player.x < 0) player.x = 0;
+      if(player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+      if(player.y > canvas.height) {
+        // در صورت سقوط، بازیکن به نقطه شروع برگردد
+        player.x = 50;
+        player.y = 50;
+        player.vx = 0;
+        player.vy = 0;
+      }
+    }
 
-        function moveLeft() {
-            if (player.x > 0) player.x -= player.speed;
-        }
+    // رسم اجزای بازی بر روی بوم
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // پس‌زمینه (آسمان)
+      ctx.fillStyle = "#87CEEB";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // رسم سکوها
+      ctx.fillStyle = "#654321"; // رنگ قهوه‌ای برای سکوها
+      platforms.forEach(plat => {
+        ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+      });
 
-        function moveRight() {
-            if (player.x < canvas.width - player.width) player.x += player.speed;
-        }
+      // رسم بازیکن
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
 
-        function moveUp() {
-            if (player.y > 0) player.y -= player.speed;
-        }
+    // حلقه اصلی بازی
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
 
-        function moveDown() {
-            if (player.y < canvas.height - player.height) player.y += player.speed;
-        }
-
-        function drawGame() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);  // پاک کردن صفحه
-            drawPlayer();
-            drawEnemies();
-        }
-
-        function gameLoop() {
-            drawGame();
-            requestAnimationFrame(gameLoop);  // اجرای مداوم بازی
-        }
-
-        gameLoop();  // شروع بازی
-    </script>
+    gameLoop();
+  </script>
 </body>
 </html>
