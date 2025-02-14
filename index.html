@@ -10,6 +10,9 @@
             text-align: center;
             margin: 50px;
         }
+        .page {
+            display: none;
+        }
         #message {
             margin-top: 20px;
             font-size: 18px;
@@ -28,43 +31,49 @@
     </style>
 </head>
 <body>
-    <h1>Welcome to English Learning Mini App</h1>
-    <p>Let's start learning English in a fun way!</p>
+    <!-- صفحه انتخاب زبان -->
+    <div id="languagePage" class="page">
+        <h1>Select Your Language</h1>
+        <select id="language">
+            <option value="en">English</option>
+            <option value="de">German</option>
+            <option value="ru">Russian</option>
+            <option value="fr">French</option>
+            <option value="it">Italian</option>
+            <option value="tr">Turkish</option>
+            <option value="ko">Korean</option>
+            <option value="fa">Persian</option>
+            <option value="es">Spanish</option>
+            <option value="pt">Portuguese</option>
+        </select>
+        <button onclick="goToLevelPage()">Next</button>
+    </div>
 
-    <!-- منوی انتخاب زبان -->
-    <select id="language">
-        <option value="en">English</option>
-        <option value="de">German</option>
-        <option value="ru">Russian</option>
-        <option value="fr">French</option>
-        <option value="it">Italian</option>
-        <option value="tr">Turkish</option>
-        <option value="ko">Korean</option>
-        <option value="fa">Persian</option>
-        <option value="es">Spanish</option>
-        <option value="pt">Portuguese</option>
-    </select>
+    <!-- صفحه انتخاب سطح -->
+    <div id="levelPage" class="page">
+        <h1>Select Your Level</h1>
+        <select id="level">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+        </select>
+        <input type="text" id="username" placeholder="Enter your name">
+        <button onclick="showMessage()">Start Learning</button>
+    </div>
 
-    <!-- منوی انتخاب سطح -->
-    <select id="level">
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-    </select>
-
-    <!-- فیلد ورودی برای دریافت نام کاربر -->
-    <input type="text" id="username" placeholder="Enter your name">
-
-    <!-- دکمه برای نمایش پیام شخصی‌سازی‌شده -->
-    <button onclick="showMessage()">Submit</button>
-
-    <!-- نمایش پیام خوشامدگویی -->
-    <p id="message"></p>
-
-    <!-- نمایش تمرین‌ها -->
-    <div id="exercise" class="exercise"></div>
+    <!-- صفحه نمایش تمرین‌ها -->
+    <div id="exercisePage" class="page">
+        <p id="message"></p>
+        <div id="exercise" class="exercise"></div>
+    </div>
 
     <script>
+        function goToLevelPage() {
+            // مخفی کردن صفحه انتخاب زبان و نمایش صفحه انتخاب سطح
+            document.getElementById("languagePage").style.display = "none";
+            document.getElementById("levelPage").style.display = "block";
+        }
+
         function showMessage() {
             // گرفتن مقدار زبان انتخاب شده
             let language = document.getElementById("language").value;
@@ -88,7 +97,23 @@
                     greeting = "Hello " + name + "! Welcome to our English learning journey.";
                 } else if (language === "de") {
                     greeting = "Hallo " + name + "! Willkommen in unserem Englisch-Lernreise.";
-                } // سایر زبان‌ها هم همینطور
+                } else if (language === "ru") {
+                    greeting = "Здравствуйте " + name + "! Добро пожаловать на наш путь изучения английского.";
+                } else if (language === "fr") {
+                    greeting = "Bonjour " + name + "! Bienvenue dans notre voyage d'apprentissage de l'anglais.";
+                } else if (language === "it") {
+                    greeting = "Ciao " + name + "! Benvenuto nel nostro viaggio di apprendimento dell'inglese.";
+                } else if (language === "tr") {
+                    greeting = "Merhaba " + name + "! İngilizce öğrenme yolculuğumuza hoş geldiniz.";
+                } else if (language === "ko") {
+                    greeting = "안녕하세요 " + name + "! 우리의 영어 학습 여정에 오신 것을 환영합니다.";
+                } else if (language === "fa") {
+                    greeting = "سلام " + name + "! به سفر یادگیری زبان انگلیسی خوش آمدید.";
+                } else if (language === "es") {
+                    greeting = "Hola " + name + "! Bienvenido a nuestro viaje de aprendizaje de inglés.";
+                } else if (language === "pt") {
+                    greeting = "Olá " + name + "! Bem-vindo à nossa jornada de aprendizado de inglês.";
+                }
 
                 // پیام سطح انتخابی
                 if (level === "beginner") {
@@ -122,8 +147,15 @@
                 document.getElementById("message").innerText = greeting + " " + levelMessage;
                 // نمایش تمرین‌ها
                 document.getElementById("exercise").innerHTML = exercise;
+
+                // مخفی کردن صفحه انتخاب سطح و نمایش صفحه تمرین‌ها
+                document.getElementById("levelPage").style.display = "none";
+                document.getElementById("exercisePage").style.display = "block";
             }
         }
+
+        // نمایش صفحه اول (انتخاب زبان)
+        document.getElementById("languagePage").style.display = "block";
     </script>
 </body>
 </html>
